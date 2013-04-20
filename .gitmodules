@@ -1,0 +1,3 @@
+[submodule "node_modules/install"]
+	path = node_modules/install
+	url = https://github.com/benjamn/install.git
