@@ -9,7 +9,7 @@
       "node-bzip": "0.0.1"
   }
   , "devDependencies": {
-      "eyes": "*",
+      "eyes": "0.1.8",
       "should": "1.2.2"
   }
 }
