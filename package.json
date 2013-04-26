@@ -3,5 +3,8 @@
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
+      "binary": "0.3.0",
+      "jspack": "*",
+      "bigint": "*"
   }
 }
