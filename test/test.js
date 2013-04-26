@@ -18,13 +18,9 @@ describe('factory', function() {
         var parser = factory.createParser('filename');
         should.exist(parser); 
     })
-    it('should create a parser with the supplied filename', function() {
-        var parser = factory.createParser('filename');
-        'filename'.should.equal(parser.filename);
-    })
-    it('should create a parser which inherits EventEmitter', function() {
+    it('should create a parser which is a pseudo EventEmitter', function() {
         var parser = factory.createParser();
-        parser.should.be.an.instanceOf(EventEmitter);
+        should.exist(parser.on);
     })
 })
 
