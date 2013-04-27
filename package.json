@@ -3,6 +3,7 @@
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
+      "eventemitter2": "0.4.11",
       "jspack": "0.0.1",
       "bigint": "0.4.2",
       "node-bzip": "0.0.1"
