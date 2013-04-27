@@ -1,7 +1,7 @@
 var factory = require('../lib').FileParserFactory;
 
 
-var parser = factory.createParser('replays/the.boneyard.SC2Replay');
+var parser = factory.createParser('../test/replays/the.boneyard.SC2Replay');
 
 parser.on('list files', parser.extract);
 parser.parse();
