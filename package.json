@@ -3,7 +3,6 @@
   , "version": "0.0.1"
   , "private": true
   , "dependencies": {
-      "binary": "0.3.0",
       "jspack": "0.0.1",
       "bigint": "0.4.2",
       "node-bzip": "0.0.1"
