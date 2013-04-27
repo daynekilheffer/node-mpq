@@ -2,12 +2,6 @@ var should = require('should');
 var root = require('../lib');
 var EventEmitter = require('events').EventEmitter;
 
-describe('root', function() {
-    it('should have a factory property', function() {
-        should.exist(root.FileParserFactory);
-    })
-})
-
 var factory = root.FileParserFactory;
 describe('factory', function() {
     it('should have a factory method', function() {
