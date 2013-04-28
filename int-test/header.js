@@ -9,7 +9,10 @@ parser.on('error.*', function(context) {
 });
 
 parser.on('userHeader', function(userHeader) {
-    eyes.inspect(userHeader, 'header'); 
+    eyes.inspect(userHeader, 'user header'); 
+});
+parser.on('fileHeader', function(fileHeader) {
+	eyes.inspect(fileHeader, 'file header');
 });
 
 parser.parse();
