@@ -6,7 +6,8 @@
       "eventemitter2": "0.4.11",
       "jspack": "0.0.1",
       "bigint": "0.4.2",
-      "node-bzip": "0.0.1"
+      "node-bzip": "0.0.1",
+      "seek-bzip": "*"
   }
   , "devDependencies": {
       "eyes": "0.1.8",
