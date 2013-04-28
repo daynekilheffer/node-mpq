@@ -4,7 +4,7 @@ var bigint = require('bigint');
 
 var PACK_FORMAT = {
 	FILE_HEADER: '<4s2I2H4I',
-	FILE_HEADER_EXT: 'q2h',
+	FILE_HEADER_EXT: 'd2h',
 	USER_DATA_HEADER: '<4s3I',
 	HASH_TABLE: '2I2HI',
 	BLOCK_TABLE: '4I'
@@ -12,7 +12,7 @@ var PACK_FORMAT = {
 
 var encryptionTable = buildEncryptionTable();
 
-fs.open('replays/the.boneyard.SC2Replay', 'r', function(err, fd) {
+fs.open('../test/replays/the.boneyard.SC2Replay', 'r', function(err, fd) {
 	read(fd, {
 		position: 0,
 		length: 4
@@ -43,6 +43,17 @@ fs.open('replays/the.boneyard.SC2Replay', 'r', function(err, fd) {
 				var newPos = userDataHeader.headerOffset;
 				read(fd, {
 					position: newPos,
+					length: 12
+				},
+				function(err, bytes, buffer) {
+					/*console.log(buffer);
+					var unpacked = unpack(buffer, PACK_FORMAT.FILE_HEADER_EXT);
+					console.log(unpacked);
+					*/
+				});
+
+				read(fd, {
+					position: newPos,
 					length: 32
 				},
 				function(err, bytes, buffer) {
@@ -63,8 +74,6 @@ fs.open('replays/the.boneyard.SC2Replay', 'r', function(err, fd) {
 						},
 						userHeader: userDataHeader
 					};
-					readHashTable(fd, fileHeader);
-					readBlockTable(fd, fileHeader);
 				});
 			});
 		});
@@ -96,15 +105,15 @@ function readHashTable(fd, header) {
 	},
 	function(err, bytes, rawData) {
 		var data = _decrypt2(rawData, key);
-        console.log(data.toString());
-        var ret = [];
-        for( var i = 0; i < tableEntryCount; i++ ) {
-            var buf = new Buffer(16);
-            data.copy(buf, 0, i*16, i*16+16);
-            ret[i] = unpack(buf, PACK_FORMAT.HASH_TABLE);
-            console.log(ret[i]);
-        }
-        console.log(ret);
+		console.log(data.toString());
+		var ret = [];
+		for (var i = 0; i < tableEntryCount; i++) {
+			var buf = new Buffer(16);
+			data.copy(buf, 0, i * 16, i * 16 + 16);
+			ret[i] = unpack(buf, PACK_FORMAT.HASH_TABLE);
+			console.log(ret[i]);
+		}
+		console.log(ret);
 	});
 
 };
@@ -125,16 +134,16 @@ function _hash(string, hashType) {
 	var seed1 = 0x7FED7FED;
 	var seed2 = 0xEEEEEEEE;
 
-    string = string.toUpperCase();
+	string = string.toUpperCase();
 
 	for (var i in string.toUpperCase()) {
 		var chr = string.charAt(i);
 		if (!isNumeric(chr)) {
 			chr = chr.charCodeAt(0);
 		}
-        console.log(chr);
+		console.log(chr);
 		var value = encryptionTable[(HASH_TYPES[hashType] << 8) + chr];
-        console.log(value);
+		console.log(value);
 		seed1 = ToUint32((value ^ (seed1 + seed2)) & 0xFFFFFFFF);
 		seed2 = chr + seed1 + seed2 + (seed2 << 5) + 3 & 0xFFFFFFFF
 	}
@@ -146,37 +155,36 @@ function _decrypt(dataBuffer, key) {
 	var seed1 = key;
 	var seed2 = 0xEEEEEEEE
 	result = new Buffer(dataBuffer.length);
-    result.fill(' ');
+	result.fill(' ');
 
-    var count = 0;
-
+	var count = 0;
 
 	for (var i = 0; i < dataBuffer.length / 4; i++) {
 		seed2 += encryptionTable[0x400 + (seed1 & 0xFF)];
 		seed2 &= 0xFFFFFFFF;
-        console.log(seed2);
+		console.log(seed2);
 		var buf = new Buffer(4);
 		dataBuffer.copy(buf, 0, i * 4, i * 4 + 4);
 		value = unpack(buf, "<I")[0];
-        console.log(value);
-        value = ToUint32((value ^ (seed1 + seed2)) & 0xFFFFFFFF);
-        console.log(value);
+		console.log(value);
+		value = ToUint32((value ^ (seed1 + seed2)) & 0xFFFFFFFF);
+		console.log(value);
 
-        seed1 = (((~seed1 << 0x15) + 0x11111111) | (seed1 >> 0x0B));
-        console.log(seed1);
+		seed1 = (((~seed1 << 0x15) + 0x11111111) | (seed1 >> 0x0B));
+		console.log(seed1);
 
-        seed1 &= 0xFFFFFFFF;
-        seed2 = ToUint32(value + seed2 + (seed2 << 5) + 3 & 0xFFFFFFFF);
-        console.log(seed2);
+		seed1 &= 0xFFFFFFFF;
+		seed2 = ToUint32(value + seed2 + (seed2 << 5) + 3 & 0xFFFFFFFF);
+		console.log(seed2);
 
-        result.writeUInt32LE(value, count);
-        count += 4;
-        console.log(result.toString());
+		result.writeUInt32LE(value, count);
+		count += 4;
+		console.log(result.toString());
 	}
-    console.log();
-    console.log(result.toString());
+	console.log();
+	console.log(result.toString());
 
-    return result;
+	return result;
 
 };
 
@@ -215,34 +223,34 @@ function ToUint32(x) {
 };
 
 function _decrypt2(dataBuffer, key) {
-    console.log(key);
+	console.log(key);
 	var seed1 = bigint(key);
 	var seed2 = bigint(0xEEEEEEEE);
 	result = new Buffer(dataBuffer.length);
-    result.fill(' ');
+	result.fill(' ');
 
-    var count = 0;
+	var count = 0;
 
 	for (var i = 0; i < dataBuffer.length / 4; i++) {
-        var encryptTableValue = bigint(encryptionTable[0x400 + (seed1 & 0xFF)]);
+		var encryptTableValue = bigint(encryptionTable[0x400 + (seed1 & 0xFF)]);
 		seed2 = seed2.add(encryptTableValue)
-        seed2 = seed2.and(0xFFFFFFFF);
+		seed2 = seed2.and(0xFFFFFFFF);
 
 		var buf = new Buffer(4);
 		dataBuffer.copy(buf, 0, i * 4, i * 4 + 4);
 		value = bigint(unpack(buf, "<I")[0]);
-        value = (value.xor(seed1.add(seed2))).and(0xFFFFFFFF);
+		value = (value.xor(seed1.add(seed2))).and(0xFFFFFFFF);
 
-        seed1 = (((seed1.xor(-1).shiftLeft(0x15)).add(0x11111111)).or(seed1.shiftRight(0x0B)));
+		seed1 = (((seed1.xor( - 1).shiftLeft(0x15)).add(0x11111111)).or(seed1.shiftRight(0x0B)));
 
-        seed1 = seed1.and(0xFFFFFFFF);
-        seed2 = value.add(seed2).add(seed2.shiftLeft(5)).add(3).and(0xFFFFFFFF);
+		seed1 = seed1.and(0xFFFFFFFF);
+		seed2 = value.add(seed2).add(seed2.shiftLeft(5)).add(3).and(0xFFFFFFFF);
 
-        result.writeUInt32LE(value.toNumber(), count);
-        count += 4;
+		result.writeUInt32LE(value.toNumber(), count);
+		count += 4;
 	}
 
-    return result;
+	return result;
 
 };
 
