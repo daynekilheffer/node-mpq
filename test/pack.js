@@ -15,6 +15,10 @@ describe('packer', function() {
             should.exist(packer.unpack);
             packer.unpack.should.be.a('function');
         })
+        it('should have a size method', function() {
+            should.exist(packer.size);
+            packer.size.should.be.a('function');
+        })
     })
     describe('#FORMAT', function() {
         it('should have a file header format', function() {
@@ -46,6 +50,13 @@ describe('packer', function() {
             var arr = [8,8];
             var unpacked = packer.pack(arr, '2I');
             unpacked.should.be.an.instanceOf(Array);
+        })
+    })
+    describe('#size', function() {
+        it('should return a number', function() {
+            var size = packer.size('2I');
+            size.should.be.a('number');
+            size.should.eql(8);
         })
     })
     describe('packing', function() {
