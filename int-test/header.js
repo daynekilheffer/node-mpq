@@ -2,7 +2,7 @@ var factory = require('../lib').FileParserFactory;
 var eyes = require('eyes');
 
 
-var parser = factory.createParser('../test/replays/the.boneyard.SC2Replay');
+var parser = factory.createParser('../test/replays/the.boneyard.SC2Replay', {debug:true});
 
 parser.on('error.*', function(context) {
 	console.log(context);
