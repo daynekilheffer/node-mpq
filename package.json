@@ -2,6 +2,10 @@
     "name": "node-mpq"
   , "version": "0.0.1"
   , "private": true
+  , "repository": {
+      "type": "git",
+      "url": "https://github.com/daynekilheffer/node-mpq.git"
+  },
   , "dependencies": {
       "eventemitter2": "0.4.11",
       "jspack": "0.0.1",
